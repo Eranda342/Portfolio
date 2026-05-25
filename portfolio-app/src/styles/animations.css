@@ -1,0 +1,193 @@
+/**
+ * animations.css — Cinematic Animation System
+ * ────────────────────────────────────────────
+ * All @keyframes definitions for the portfolio.
+ * CSS-only animations for lightweight interactions.
+ * Framer Motion handles complex orchestration separately.
+ *
+ * PERFORMANCE RULES:
+ *  1. Animate ONLY: transform, opacity, filter (no layout-thrashing props)
+ *  2. Use will-change sparingly — only on elements actively animating
+ *  3. Respect prefers-reduced-motion (see block at bottom)
+ *  4. Floating animations capped at 2 orbs max in the same viewport
+ */
+
+/* ─── Cinematic Background Orbs ─────────────────────────────────────────── */
+
+@keyframes orb-drift-1 {
+  0%, 100% { transform: translate(0,     0);   }
+  33%       { transform: translate(80px, -60px); }
+  66%       { transform: translate(-40px, 40px); }
+}
+
+@keyframes orb-drift-2 {
+  0%, 100% { transform: translate(0,       0);  }
+  33%       { transform: translate(-100px, 80px); }
+  66%       { transform: translate(60px,  -40px); }
+}
+
+/* ─── Tech Ticker / Marquee ─────────────────────────────────────────────── */
+
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ─── Scanline Sweep ────────────────────────────────────────────────────── */
+
+@keyframes scanline {
+  0%   { top: -2px; opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ─── Shimmer Sweep (buttons, cards) ────────────────────────────────────── */
+
+@keyframes shimmer {
+  from { transform: translateX(-100%) skewX(-12deg); }
+  to   { transform: translateX(300%)  skewX(-12deg); }
+}
+
+/* ─── Navbar Border Sheen ───────────────────────────────────────────────── */
+
+@keyframes border-sheen {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(350%);  }
+}
+
+/* ─── Glow Pulse (logo badge, status dots) ──────────────────────────────── */
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: var(--glow-opacity-subtle, 0.07); }
+  50%       { opacity: var(--glow-opacity-medium, 0.25); }
+}
+
+/* ─── Blink (cursor, active indicators) ────────────────────────────────── */
+
+@keyframes blink {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.2; }
+}
+
+/* ─── Globe Spin ────────────────────────────────────────────────────────── */
+
+@keyframes globe-spin {
+  from { transform: rotateY(0deg);   }
+  to   { transform: rotateY(360deg); }
+}
+
+/* ─── Reveal Fade-Up (fallback for non-JS) ──────────────────────────────── */
+
+@keyframes reveal-up {
+  from {
+    opacity:   0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Counter Pop (stats) ───────────────────────────────────────────────── */
+
+@keyframes counter-pop {
+  0%   { transform: scale(1);    }
+  50%  { transform: scale(1.04); }
+  100% { transform: scale(1);    }
+}
+
+/* ─── Utility Animation Classes ─────────────────────────────────────────── */
+
+@layer utilities {
+  .animate-ticker {
+    animation: ticker 25s linear infinite;
+    will-change: transform;
+  }
+
+  .animate-scanline {
+    animation: scanline 9s linear infinite;
+    pointer-events: none;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 1.4s ease-out;
+  }
+
+  .animate-border-sheen {
+    animation: border-sheen 6s linear infinite;
+  }
+
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite;
+  }
+
+  .animate-blink {
+    animation: blink 1.6s ease-in-out infinite;
+  }
+
+  .animate-orb-1 {
+    animation: orb-drift-1 22s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  .animate-orb-2 {
+    animation: orb-drift-2 28s ease-in-out infinite;
+    will-change: transform;
+  }
+
+  /* Shimmer hover trigger */
+  .shimmer-hover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.15) 50%,
+      transparent 100%
+    );
+    transform: translateX(-100%) skewX(-12deg);
+    transition: transform 0ms;
+  }
+  .shimmer-hover:hover::after {
+    animation: shimmer 1.4s ease-out;
+  }
+}
+
+/* ─── Reduced Motion ────────────────────────────────────────────────────── */
+/**
+ * Respects OS-level "Reduce Motion" accessibility setting.
+ * Disables all non-essential animations while preserving
+ * functional transitions (opacity fades for visibility).
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+
+  /* Preserve functional visibility — opacity still transitions */
+  .glass-card,
+  .glass-card-blue,
+  .glass-card-violet {
+    transition: none;
+  }
+
+  /* Stop all marquees */
+  .animate-ticker {
+    animation: none;
+  }
+
+  /* Freeze orbs */
+  .animate-orb-1,
+  .animate-orb-2 {
+    animation: none;
+  }
+}

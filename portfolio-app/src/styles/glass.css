@@ -1,0 +1,154 @@
+/**
+ * glass.css — Glassmorphism Utility Classes
+ * ──────────────────────────────────────────
+ * Reusable glass-effect classes using design tokens.
+ * Uses @layer components so Tailwind utilities override when needed.
+ *
+ * PERFORMANCE RULES:
+ *  1. Never nest backdrop-filter layers (e.g. blurred card inside blurred modal)
+ *  2. Max 2 layers in the same z-stack path
+ *  3. Use contain: paint on glass containers to limit repaint scope
+ *  4. All blur values come from --blur-* tokens
+ */
+
+@layer components {
+  /* ─── Base Glass Levels ────────────────────────────────────────────── */
+
+  .glass-soft {
+    background:      var(--glass-soft-bg);
+    backdrop-filter: blur(var(--blur-soft)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur-soft)) saturate(150%);
+    border:          1px solid var(--color-border-soft);
+    box-shadow:      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    contain:         paint;
+  }
+
+  .glass-medium {
+    background:      var(--glass-medium-bg);
+    backdrop-filter: blur(var(--blur-medium)) saturate(160%);
+    -webkit-backdrop-filter: blur(var(--blur-medium)) saturate(160%);
+    border:          1px solid var(--color-border);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      var(--shadow-card);
+    contain:         paint;
+  }
+
+  .glass-strong {
+    background:      var(--glass-strong-bg);
+    backdrop-filter: blur(var(--blur-strong)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur-strong)) saturate(180%);
+    border:          1px solid var(--color-border-hard);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 20px 60px -15px rgba(0, 0, 0, 0.70);
+    contain:         paint;
+  }
+
+  /* ─── Specialized Glass ────────────────────────────────────────────── */
+
+  /* Navbar — heavier background tint, single blur layer */
+  .glass-navbar {
+    background:      var(--glass-navbar-bg);
+    backdrop-filter: blur(var(--blur-medium)) saturate(200%);
+    -webkit-backdrop-filter: blur(var(--blur-medium)) saturate(200%);
+    border-bottom:   1px solid var(--color-border-soft);
+    box-shadow:      0 8px 32px -12px rgba(0, 0, 0, 0.60);
+  }
+
+  /* Command palette / modals — strongest glass, never nested */
+  .glass-modal {
+    background:      rgba(8, 9, 14, 0.85);
+    backdrop-filter: blur(var(--blur-strong)) saturate(180%);
+    -webkit-backdrop-filter: blur(var(--blur-strong)) saturate(180%);
+    border:          1px solid var(--color-border-hard);
+    box-shadow:      var(--shadow-modal);
+  }
+
+  /* ─── Glow Variants ────────────────────────────────────────────────── */
+
+  .glow-blue {
+    box-shadow: var(--shadow-glow-blue);
+  }
+
+  .glow-violet {
+    box-shadow: var(--shadow-glow-violet);
+  }
+
+  .glow-blue-lg {
+    box-shadow: var(--shadow-glow-blue-lg);
+  }
+
+  /* Hover glow — applied on group-hover via Tailwind group */
+  .glow-card-hover {
+    transition: box-shadow var(--duration-base) var(--ease-cinematic);
+  }
+  .glow-card-hover:hover {
+    box-shadow:
+      var(--shadow-glow-blue),
+      var(--shadow-card-hover);
+  }
+
+  /* ─── Glass Card ───────────────────────────────────────────────────── */
+
+  .glass-card {
+    background:      var(--glass-soft-bg);
+    backdrop-filter: blur(var(--blur-soft)) saturate(150%);
+    -webkit-backdrop-filter: blur(var(--blur-soft)) saturate(150%);
+    border:          1px solid var(--color-border-soft);
+    border-radius:   var(--radius-card);
+    box-shadow:      var(--shadow-card);
+    transition:
+      background var(--duration-base) var(--ease-cinematic),
+      box-shadow  var(--duration-base) var(--ease-cinematic),
+      border-color var(--duration-base) var(--ease-cinematic),
+      transform    var(--duration-base) var(--ease-cinematic);
+    contain: paint;
+  }
+
+  .glass-card:hover {
+    background:    rgba(255, 255, 255, 0.07);
+    border-color:  var(--color-border);
+    box-shadow:    var(--shadow-card-hover);
+  }
+
+  /* ─── Accent Border Glass Cards ────────────────────────────────────── */
+
+  .glass-card-blue {
+    border-color: var(--color-accent-1-border);
+  }
+  .glass-card-blue:hover {
+    box-shadow: var(--shadow-glow-blue), var(--shadow-card-hover);
+  }
+
+  .glass-card-violet {
+    border-color: var(--color-accent-2-border);
+  }
+  .glass-card-violet:hover {
+    box-shadow: var(--shadow-glow-violet), var(--shadow-card-hover);
+  }
+
+  /* ─── Badge / Pill ─────────────────────────────────────────────────── */
+
+  .glass-badge {
+    background:    rgba(255, 255, 255, 0.05);
+    border:        1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    backdrop-filter: blur(var(--blur-soft));
+    -webkit-backdrop-filter: blur(var(--blur-soft));
+  }
+
+  .glass-badge-blue {
+    background:    var(--color-accent-1-dim);
+    border:        1px solid var(--color-accent-1-border);
+    border-radius: var(--radius-pill);
+    color:         var(--color-accent-1);
+  }
+
+  .glass-badge-violet {
+    background:    var(--color-accent-2-dim);
+    border:        1px solid var(--color-accent-2-border);
+    border-radius: var(--radius-pill);
+    color:         var(--color-accent-2);
+  }
+}
